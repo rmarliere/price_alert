@@ -3,22 +3,33 @@ import logging
 from time import sleep
 import datetime
 import websockets
+from websockets.exceptions import ConnectionClosed
 import asyncio
 import json
 import requests
 
-previous = 1
+previous = 8900
 
 
 async def capture_data():
     uri = "wss://www.bitmex.com/realtime?subscribe=instrument:XBTUSD"
     async with websockets.connect(uri) as websocket:
         while True:
-            data = await websocket.recv()
-            data = json.loads(data)
+            try:
+                data = await websocket.recv()
+                data = json.loads(data)
+            except (ConnectionClosed):
+                print("Connection is Closed")
+                send_to_slack("Connection is Closed")
+                data = None
+                sleep(10)
+                continue
             if "data" in data:
                 price = data.get('data')[0].get('lastPrice')
                 if price:
+                    global previous
+                    print(price)
+                    print(get_change(price, previous))
                     price = data.get('data')[0].get('lastPrice')
                     set_price(price)
 
@@ -26,7 +37,7 @@ async def capture_data():
 def set_price(current):
     global previous
     change = get_change(current, previous)
-    if previous != current and change >= 0.5:
+    if previous != current and (change >= 0.5 or change <= -0.5):
         currentDT = datetime.datetime.now()
         change_f = "{:.2f}".format(change)
         date_f = currentDT.strftime("%Y-%m-%d %H:%M:%S")
@@ -37,22 +48,22 @@ def set_price(current):
         print(f'Change: {change_f}%')
         print(date_f)
         print('#############################\n\n')
-        send_to_slack(current, previous, change)
+        message = format_message(current, previous, change)
+        send_to_slack(message)
 
         previous = current
 
-    if change >= 0.5:
-        previous = current
-
-def send_to_slack(current, previous, change):
+def send_to_slack(message):
     API_ENDPOINT = "https://hooks.slack.com/services/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"
-    change_f = "{:.2f}".format(change)
-    message = f"${previous} to ${current} - {change_f}%"
     data = {'payload':'{"text": "' + message + '"}'} 
 
-    r = requests.post(url = API_ENDPOINT, data = data) 
-    print(r)
+    return requests.post(url = API_ENDPOINT, data = data) 
 
+def format_message(current, previous, change):
+    change_f = "{:.2f}".format(change)
+    message = f"${previous} to ${current}  {change_f}%"
+
+    return message
 
 def get_change(current, previous):
     if current == previous:
@@ -65,5 +76,8 @@ def get_change(current, previous):
     except ZeroDivisionError:
         return 0
 
-
-asyncio.get_event_loop().run_until_complete(capture_data())
+try:
+    asyncio.get_event_loop().run_until_complete(capture_data())
+except:
+    send_to_slack("Exception")
+    print(Exception.__cause__)
