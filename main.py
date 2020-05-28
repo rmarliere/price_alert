@@ -1,4 +1,3 @@
-from bitmex_websocket import BitMEXWebsocket
 import logging
 from time import sleep
 import datetime
@@ -8,9 +7,7 @@ import asyncio
 import json
 import requests
 
-
 previous = 9143
-
 
 async def capture_data():
     uri = "wss://www.bitmex.com/realtime?subscribe=instrument:XBTUSD"
@@ -31,14 +28,12 @@ async def capture_data():
                         except:
                             print("Reconnecting... 2")
                             await asyncio.sleep(2)
-                            break  # inner loop                
+                            break              
                         
                     if "data" in data:
                         price = data.get('data')[0].get('lastPrice')
                         if price:
                             global previous
-                            #print(price)
-                            #print(get_change(price, previous))
                             price = data.get('data')[0].get('lastPrice')
                             set_price(price)
 
@@ -95,10 +90,3 @@ def get_change(current, previous):
 
 asyncio.get_event_loop().run_until_complete(capture_data())
 asyncio.get_event_loop().run_forever()
-
-# try:
-#     asyncio.get_event_loop().run_until_complete(capture_data())
-#     asyncio.get_event_loop().run_forever()
-# except:
-#     #send_to_slack("Exception")
-#     print(Exception.__cause__)
