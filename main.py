@@ -8,30 +8,47 @@ import asyncio
 import json
 import requests
 
-previous = 8900
+
+previous = 9143
 
 
 async def capture_data():
     uri = "wss://www.bitmex.com/realtime?subscribe=instrument:XBTUSD"
-    async with websockets.connect(uri) as websocket:
-        while True:
-            try:
-                data = await websocket.recv()
-                data = json.loads(data)
-            except (ConnectionClosed):
-                print("Connection is Closed")
-                send_to_slack("Connection is Closed")
-                data = None
-                sleep(10)
-                continue
-            if "data" in data:
-                price = data.get('data')[0].get('lastPrice')
-                if price:
-                    global previous
-                    print(price)
-                    print(get_change(price, previous))
-                    price = data.get('data')[0].get('lastPrice')
-                    set_price(price)
+    while True:
+        try:
+            async with websockets.connect(uri) as websocket:
+                while True:
+                    try:
+                        data = await websocket.recv()
+                        data = json.loads(data)
+                    except (asyncio.TimeoutError, websockets.exceptions.ConnectionClosed): 
+                        print("Connection is Closed")       
+                        try:
+                            print("Reconnecting...")
+                            pong = await websocket.ping()
+                            await asyncio.wait_for(pong, timeout=10)
+                            continue
+                        except:
+                            print("Reconnecting... 2")
+                            await asyncio.sleep(2)
+                            break  # inner loop                
+                        
+                    if "data" in data:
+                        price = data.get('data')[0].get('lastPrice')
+                        if price:
+                            global previous
+                            #print(price)
+                            #print(get_change(price, previous))
+                            price = data.get('data')[0].get('lastPrice')
+                            set_price(price)
+
+        except ConnectionRefusedError:
+            print("ConnectionRefusedError")
+            continue
+        except Exception:
+            print("Exception 1")
+            continue
+
 
 
 def set_price(current):
@@ -76,8 +93,12 @@ def get_change(current, previous):
     except ZeroDivisionError:
         return 0
 
-try:
-    asyncio.get_event_loop().run_until_complete(capture_data())
-except:
-    send_to_slack("Exception")
-    print(Exception.__cause__)
+asyncio.get_event_loop().run_until_complete(capture_data())
+asyncio.get_event_loop().run_forever()
+
+# try:
+#     asyncio.get_event_loop().run_until_complete(capture_data())
+#     asyncio.get_event_loop().run_forever()
+# except:
+#     #send_to_slack("Exception")
+#     print(Exception.__cause__)
