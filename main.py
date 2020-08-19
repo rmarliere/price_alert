@@ -71,20 +71,6 @@ def get_alert_objects():
 
     return l
 
-def calculate_change(current, previous):
-    if current == previous or previous is None:
-        return float(0)
-
-    try:
-        change = (abs(float(current) - float(previous)) / float(previous)) * 100.0
-        if (previous > current):
-            return float(change * -1)
-
-        return float(change)
-
-    except ZeroDivisionError:
-        return float(0)
-
 def callback_fn(data):
     global alert_object
     for alert_object in alert_objects:
