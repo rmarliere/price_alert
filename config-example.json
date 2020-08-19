@@ -1,0 +1,42 @@
+{
+    "tokens": {
+        "pushover":  {
+        "token": "",
+        "user": ""
+        },
+        "binance": {
+            "key": "",
+            "secret": ""
+        },
+        "slack": {
+            "endpoint": ""
+        }
+    },
+    "alerts": [
+        {
+            "symbol": "btcusdt",
+            "tkr": "BTCUSD",
+            "pos": 2,
+            "rule": {
+                "type": "percent",
+                "change": "0.1"
+            },
+            "notifications": [
+                "pushover"
+            ]
+        },
+        {
+            "symbol": "eosusdt",
+            "tkr": "EOSUSD",
+            "pos": 4,
+            "rule": {
+                "type": "percent",
+                "change": "0.1"
+            },
+            "notifications": [
+                "pushover"
+            ]
+
+        }
+    ]
+}
