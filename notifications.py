@@ -12,9 +12,9 @@ class Notifications():
         self.change = price.change
 
     def _format_message(self):
-        current_f = self.truncate(float(self.current), self.config['pos'])
+        current_f = self._truncate(float(self.current), self.config['width'])
         if self.previous is None:
-            return f"Starting {self.config['tkr']} alert @ {current_f}"
+            return f"Starting {self.config['symbol'].upper()} alert @ {current_f}"
 
         if float(self.current) > float(self.previous):
             up_or_down = "up"
@@ -23,10 +23,9 @@ class Notifications():
 
         change_f = "{:.2f}".format(float(self.change))
 
-        return f"Alert {self.config['tkr']} {up_or_down} @ {current_f} (%{change_f})"
+        return f"Alert {self.config['symbol'].upper()} {up_or_down} @ {current_f} (%{change_f})"
 
     def _send_to_pushover(self):
-        print(self.config)
         conn = http.client.HTTPSConnection("api.pushover.net:443")
         conn.request("POST", "/1/messages.json",
         urllib.parse.urlencode({
@@ -41,12 +40,15 @@ class Notifications():
         API_ENDPOINT = self.config['tokens']["slack"]["endpoint"]
         data = {'payload':'{"text": "' + self.message + '"}'}
         requests.post(url=API_ENDPOINT, data=data)
+        logging.warning(f"Slack sent: {self.message}")
+
+    def _truncate(self, number, position):
+        width = "{:." + str(position) + "f}"
+        '''Return number with dropped decimal places past specified position.'''
+        return width.format(number)
 
     def send_notifications(self):
         self.message = self._format_message()
         self._send_to_pushover()
 
-    def truncate(self, number, position):
-        width = "{:." + str(position) + "f}"
-        '''Return number with dropped decimal places past specified position.'''
-        return width.format(number)
+

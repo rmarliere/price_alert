@@ -15,8 +15,7 @@
     "alerts": [
         {
             "symbol": "btcusdt",
-            "tkr": "BTCUSD",
-            "pos": 2,
+            "width": 2,
             "rule": {
                 "type": "percent",
                 "change": "0.1"
@@ -27,8 +26,7 @@
         },
         {
             "symbol": "eosusdt",
-            "tkr": "EOSUSD",
-            "pos": 4,
+            "width": 4,
             "rule": {
                 "type": "percent",
                 "change": "0.1"
