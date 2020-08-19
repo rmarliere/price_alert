@@ -10,6 +10,7 @@ class Notifications():
         self.current = price.current
         self.previous = price.previous
         self.change = price.change
+        self.title = "Starting..."
 
     def _format_message(self):
         current_f = self._truncate(float(self.current), self.config['width'])
@@ -22,6 +23,7 @@ class Notifications():
             up_or_down = "down"
 
         change_f = "{:.2f}".format(float(self.change))
+        self.title = up_or_down.capitalize() + " - " + self.config['symbol'].upper()
 
         return f"Alert {self.config['symbol'].upper()} {up_or_down} @ {current_f} (%{change_f})"
 
@@ -32,6 +34,7 @@ class Notifications():
             "token": self.config['tokens']["pushover"]["token"],
             "user": self.config['tokens']["pushover"]["user"],
             "message": "Binance: " + self.message,
+            "title": self.title,
         }), { "Content-type": "application/x-www-form-urlencoded" })
         conn.getresponse()
         logging.warning(f"Pushover sent: {self.message}")
