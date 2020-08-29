@@ -1,12 +1,17 @@
 class Rule():
-    def __init__(self, rule_type, value):
-        self.rule_type = rule_type
-        self.value = value
+    def __init__(self, config):
+        self.rule_type = config['rule']['type']
+        self.value = float(config['rule']['change'])
 
-    def should_notify(self, current, previous, change):
-        if previous is None:
+    def should_notify(self, price):
+        
+        if price.previous is None:
             return True
-        if float(previous) != float(current) and (float(change) >= float(self.value) or float(change) <= (float(self.value)*-1)):
+        previous = float(price.previous)
+        current = float(price.current)
+        change = float(price.change())
+        value = float(self.value)
+        if previous != current and (change >= self.value or change <= self.value*-1):
             return True
 
         return False

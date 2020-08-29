@@ -10,7 +10,10 @@
         },
         "slack": {
             "endpoint": ""
-        }
+        },
+        "telegram": {
+            "bot_token": "",
+            "chat_ids": [""]
     },
     "alerts": [
         {

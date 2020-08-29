@@ -45,6 +45,15 @@ class Notifications():
         requests.post(url=API_ENDPOINT, data=data)
         logging.warning(f"Slack sent: {self.message}")
 
+    def _send_to_telegram(self):
+        
+        bot_token = self.config['tokens']["telegram"]["bot_token"]
+        chat_ids = self.config['tokens']["telegram"]["chat_ids"]
+        for chat_id in chat_ids:
+            send_text = f"https://api.telegram.org/bot{bot_token}/sendMessage?chat_id={chat_id}&parse_mode=Markdown&text={self.message}"
+            response = requests.get(send_text)
+            logging.warning(response.json())
+
     def _truncate(self, number, position):
         width = "{:." + str(position) + "f}"
         '''Return number with dropped decimal places past specified position.'''
@@ -53,5 +62,6 @@ class Notifications():
     def send_notifications(self):
         self.message = self._format_message()
         self._send_to_pushover()
+        self._send_to_telegram()
 
 

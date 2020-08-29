@@ -72,7 +72,7 @@ def get_alert_objects():
     return l
 
 def callback_fn(data):
-    global alert_object
+    #global alert_object
     for alert_object in alert_objects:
         alert_object.handle_ticker(data)
 

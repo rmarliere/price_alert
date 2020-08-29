@@ -4,7 +4,12 @@ class Price():
         self.previous = previous
         self.change = change
 
-    def get_percentage_change(self):
+
+    def update_price(self, current):
+        self.current = current
+        self.change = self._get_percentage_change
+
+    def _get_percentage_change(self):
         current = self.current
         previous = self.previous
         if current == previous or previous is None:
@@ -20,7 +25,7 @@ class Price():
         except ZeroDivisionError:
             return float(0)
 
-    def get_value_change(self):
+    def _get_value_change(self):
         current = self.current
         previous = self.previous
         if current == previous or previous is None:
