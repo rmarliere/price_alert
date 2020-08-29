@@ -22,7 +22,7 @@ class Notifications():
         else:
             up_or_down = "down"
 
-        change_f = "{:.2f}".format(float(self.change))
+        change_f = "{:.2f}".format(float(self.change()))
         self.title = up_or_down.capitalize() + " - " + self.config['symbol'].upper()
 
         return f"Alert {self.config['symbol'].upper()} {up_or_down} @ {current_f} (%{change_f})"
