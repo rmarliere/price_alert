@@ -14,10 +14,12 @@ import alert
 alert_objects = []
 
 logging.basicConfig(
-    filename='binance.log', 
-    filemode='w',
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
-    level=logging.WARNING
+    level=logging.WARNING,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("binance.log"),
+        logging.StreamHandler()
+    ]
 )
 
 # load config parameters to memory

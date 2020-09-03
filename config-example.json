@@ -1,8 +1,8 @@
 {
     "tokens": {
         "pushover":  {
-        "token": "",
-        "user": ""
+            "token": "",
+            "user": ""
         },
         "binance": {
             "key": "",
@@ -11,13 +11,21 @@
         "slack": {
             "endpoint": ""
         },
-        "telegram": {
+	    "telegram": {
+            "api_id": "",
+            "api_hash": "",
             "bot_token": "",
             "chat_ids": [""]
+        },
+        "newdex": {
+            "api_key": "",
+            "secret_key": ""
+        }
     },
     "alerts": [
         {
             "symbol": "btcusdt",
+            "label": "BTCUSDT",
             "width": 2,
             "rule": {
                 "type": "percent",
@@ -25,19 +33,42 @@
             },
             "notifications": [
                 "pushover"
-            ]
+            ],
+            "exchange": {
+                "label": "Binance"
+            }
         },
         {
             "symbol": "eosusdt",
+            "label": "EOSUSDT",
             "width": 4,
             "rule": {
                 "type": "percent",
-                "change": "0.1"
+                "change": "1"
             },
             "notifications": [
                 "pushover"
-            ]
-
+            ],
+            "exchange": {
+                "label": "Binance"
+            }
+        }
+    ],
+    "alerts_newdex": [
+        {
+            "symbol": "token.defi-box-eos",
+            "width": 2,
+            "label": "BOXEOS",
+            "rule": {
+                "type": "percent",
+                "change": "3"
+            },
+            "notifications": [
+                "pushover"
+            ],
+            "exchange": {
+                "label": "Newdex"
+            }
         }
     ]
 }

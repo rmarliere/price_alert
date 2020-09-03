@@ -15,17 +15,19 @@ class Notifications():
     def _format_message(self):
         current_f = self._truncate(float(self.current), self.config['width'])
         if self.previous is None:
-            return f"Starting {self.config['symbol'].upper()} alert @ {current_f}"
+            return f"Starting {self.config['label'].upper()} alert @ {current_f}"
 
         if float(self.current) > float(self.previous):
             up_or_down = "up"
+            emoji = "🟢"
         else:
             up_or_down = "down"
+            emoji = "🔴"
 
         change_f = "{:.2f}".format(float(self.change()))
-        self.title = up_or_down.capitalize() + " - " + self.config['symbol'].upper()
+        self.title = self.config['label'].upper() + " " + emoji
 
-        return f"Alert {self.config['symbol'].upper()} {up_or_down} @ {current_f} (%{change_f})"
+        return f"{self.config['exchange']['label']}: {self.config['label'].upper()} {up_or_down} @ {current_f} (%{change_f})"
 
     def _send_to_pushover(self):
         conn = http.client.HTTPSConnection("api.pushover.net:443")
@@ -33,8 +35,9 @@ class Notifications():
         urllib.parse.urlencode({
             "token": self.config['tokens']["pushover"]["token"],
             "user": self.config['tokens']["pushover"]["user"],
-            "message": "Binance: " + self.message,
+            "message": self.message,
             "title": self.title,
+            "html": 1,
         }), { "Content-type": "application/x-www-form-urlencoded" })
         conn.getresponse()
         logging.warning(f"Pushover sent: {self.message}")
