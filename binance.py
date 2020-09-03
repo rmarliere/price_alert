@@ -14,7 +14,7 @@ import alert
 alert_objects = []
 
 logging.basicConfig(
-    filename='app.log', 
+    filename='binance.log', 
     filemode='w',
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', 
     level=logging.WARNING
@@ -74,7 +74,7 @@ def get_alert_objects():
 def callback_fn(data):
     #global alert_object
     for alert_object in alert_objects:
-        alert_object.handle_ticker(data)
+        alert_object.handle_ticker(data['data']['s'], data['data']['c'])
 
 try:
     alert_objects = get_alert_objects()
