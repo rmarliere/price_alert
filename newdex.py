@@ -67,7 +67,7 @@ def get_alert_objects():
 
 def callback_fn(data):
     #global alert_object
-    if data['code'] != 200
+    if data['code'] != 200:
         logging.error("Exception asyncio occurred", exc_info=True)
         return None
     for alert_object in alert_objects:
