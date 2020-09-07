@@ -43,6 +43,9 @@ async def capture_data():
             logging.warning("Connection is closed.")
             await asyncio.sleep(2)
             continue
+        except Exception as e:
+            logging.warning("Error no loop")
+            continue
 
 def get_newdex_url():
     timestamp = int(datetime.now().timestamp())
@@ -68,7 +71,7 @@ def get_alert_objects():
 def callback_fn(data):
     #global alert_object
     if data['code'] != 200:
-        logging.error("Exception asyncio occurred", exc_info=True)
+        logging.warning("Code != 200")
         return None
     for alert_object in alert_objects:
         alert_object.handle_ticker(data['data']['symbol'], data['data']['last'])
@@ -78,4 +81,4 @@ try:
     asyncio.get_event_loop().run_until_complete(capture_data())
     asyncio.get_event_loop().run_forever()
 except Exception as e:
-    logging.error("Exception asyncio occurred", exc_info=True)
+    logging.warning("Exception asyncio occurred")

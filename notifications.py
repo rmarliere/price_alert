@@ -15,7 +15,7 @@ class Notifications():
     def _format_message(self):
         current_f = self._truncate(float(self.current), self.config['width'])
         if self.previous is None:
-            return f"Starting {self.config['label'].upper()} alert @ {current_f}"
+            return f"Starting {self.config['label'].upper()} ({self.config['exchange']['label']}) alert @ {current_f}"
 
         if float(self.current) > float(self.previous):
             up_or_down = "up"
