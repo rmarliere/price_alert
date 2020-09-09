@@ -45,6 +45,7 @@ async def capture_data():
             continue
         except Exception as e:
             logging.warning("Error no loop")
+            await asyncio.sleep(2)
             continue
 
 def get_newdex_url():

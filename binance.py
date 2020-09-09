@@ -47,14 +47,14 @@ async def capture_data(uri):
                         except:
                             logging.warning("Sleeping...")
                             await asyncio.sleep(2)
-                            break
+                            continue
 
         except ConnectionRefusedError:
             logging.error("ConnectionRefusedError", exc_info=True)
-            #continue
+            continue
         except Exception as e:
             logging.error("Exception websocket occurred", exc_info=True)
-            #continue
+            continue
 
 def get_stream_uri():
     uri = "wss://stream.binance.com:9443/stream?streams="
