@@ -47,13 +47,13 @@ async def capture_data(uri):
                         except:
                             logging.warning("Sleeping...")
                             await asyncio.sleep(2)
-                            continue
+                            break
 
         except ConnectionRefusedError:
-            logging.error("ConnectionRefusedError", exc_info=True)
+            logging.warning("ConnectionRefusedError")
             continue
         except Exception as e:
-            logging.error("Exception websocket occurred", exc_info=True)
+            logging.warning("Exception websocket occurred")
             continue
 
 def get_stream_uri():
@@ -84,4 +84,4 @@ try:
     asyncio.get_event_loop().run_until_complete(capture_data(uri))
     asyncio.get_event_loop().run_forever()
 except Exception as e:
-    logging.error("Exception asyncio occurred", exc_info=True)
+    logging.warning("Exception asyncio occurred")
