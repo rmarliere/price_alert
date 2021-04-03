@@ -1,9 +1,11 @@
 {
     "tokens": {
-        "pushover":  {
-            "token": "",
-            "user": ""
-        },
+        "pushover":  [
+            {
+                "token": "",
+                "user": ""
+            }
+        ],
         "binance": {
             "key": "",
             "secret": ""
